@@ -55,6 +55,7 @@ export class UserController {
   @Delete(':id')
   @ApiOperation({ summary: 'Delete user from this api' })
   @ApiResponse({ status: 200, description: 'Delete user' })
+  @ApiResponse({ status: 400, description: 'Bad Request' })
   @ApiResponse({ status: 404, description: 'Not Found' })
   @ApiResponse({ status: 500, description: 'Internal server error' })
   async remove(@Param('id') id: number): Promise<void> {

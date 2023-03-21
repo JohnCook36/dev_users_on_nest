@@ -36,7 +36,7 @@ export class UserService {
 
       return await this.usersRepository.save(user);
     } catch (e) {
-      console.log(e);
+      console.log(e, 'Error');
     }
   }
 
@@ -49,10 +49,10 @@ export class UserService {
   }
 
   async remove(id: number): Promise<void> {
-    try {
-      await this.usersRepository.delete(id);
-    } catch (e) {
-      console.log(e);
+    const user = await this.usersRepository.findOneBy({ id: id });
+    if (!user) {
+      throw new NotFoundException(`User with id = ${id} not exists`);
     }
+    await this.usersRepository.delete(user);
   }
 }
