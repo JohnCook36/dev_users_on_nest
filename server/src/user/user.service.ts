@@ -13,26 +13,44 @@ export class UserService {
   ) {}
 
   async findAll(): Promise<User[]> {
-    return this.usersRepository.find();
+    try {
+      return await this.usersRepository.find();
+    } catch (e) {
+      console.log(e);
+    }
   }
-  findOne(id: number): Promise<User> {
-    return this.usersRepository.findOneBy({ id: id });
+  async findOne(id: number): Promise<User> {
+    const findById = await this.usersRepository.findOneBy({ id: id });
+    return findById;
   }
 
   create(userDto: CreateUserDto) {
-    const user = new User();
-    user.firstName = userDto.firstname;
-    user.lastName = userDto.lastname;
-    user.age = userDto.age;
+    try {
+      const user = new User();
+      user.firstName = userDto.firstName;
+      user.lastName = userDto.lastName;
+      user.age = userDto.age;
+      console.log(userDto);
 
-    return this.usersRepository.save(user);
+      return this.usersRepository.save(user);
+    } catch (e) {
+      console.log(e);
+    }
   }
 
   update(id: number, updateUserDto: UpdateUserDto): Promise<UpdateResult> {
-    return this.usersRepository.update(id, updateUserDto);
+    try {
+      return this.usersRepository.update(id, updateUserDto);
+    } catch (e) {
+      console.log(e);
+    }
   }
 
   async remove(id: number): Promise<void> {
-    await this.usersRepository.delete(id);
+    try {
+      await this.usersRepository.delete(id);
+    } catch (e) {
+      console.log(e);
+    }
   }
 }

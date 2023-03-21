@@ -6,38 +6,78 @@ import {
   Param,
   Delete,
   Patch,
+  HttpStatus,
+  HttpException,
 } from '@nestjs/common';
 import { UserService } from './user.service';
 import { CreateUserDto } from './dto/create-user.dto';
 import { UpdateUserDto } from './dto/update-user.dto';
 import { User } from './entities/user.entity';
-
+import { ApiBody, ApiResponse, ApiTags } from '@nestjs/swagger';
+@ApiTags('users')
 @Controller('user')
 export class UserController {
   constructor(private readonly userService: UserService) {}
 
   @Get()
-  getAll(): Promise<User[]> {
-    return this.userService.findAll();
+  @ApiResponse({ status: 200, description: 'Get all users', type: [User] })
+  @ApiResponse({ status: 404, description: 'Not Found' })
+  @ApiResponse({ status: 500, description: 'Internal server error' })
+  async getAll(): Promise<User[]> {
+    try {
+      return await this.userService.findAll();
+    } catch (e) {
+      console.log(e);
+    }
   }
 
   @Get(`:id`)
-  getOne(@Param('id') id: number): Promise<User> {
-    return this.userService.findOne(id);
+  @ApiResponse({ status: 200, description: 'Get user by id', type: User })
+  @ApiResponse({ status: 404, description: 'Not Found' })
+  @ApiResponse({ status: 500, description: 'Internal server error' })
+  async getOne(@Param('id') id: number): Promise<User> {
+    const userId = await this.userService.findOne(id);
+    console.log(userId);
+    if (userId === undefined || null) {
+      throw new HttpException(
+        `User with id = ${id} not exists`,
+        HttpStatus.NOT_FOUND,
+      );
+    }
+    return userId;
   }
 
+  @ApiBody({ type: CreateUserDto })
   @Post()
-  create(@Body() createUserDto: CreateUserDto) {
-    return this.userService.create(createUserDto);
+  @ApiResponse({ status: 201, description: 'Create user', type: User })
+  @ApiResponse({ status: 404, description: 'Not Found' })
+  @ApiResponse({ status: 500, description: 'Internal server error' })
+  async create(@Body() createUserDto: CreateUserDto) {
+    return await this.userService.create(createUserDto);
   }
 
   @Patch(':id')
-  update(@Param('id') id: string, @Body() updateUserDto: UpdateUserDto) {
-    return this.userService.update(+id, updateUserDto);
+  @ApiBody({ type: UpdateUserDto })
+  @ApiResponse({ status: 200, description: 'Update user', type: User })
+  @ApiResponse({ status: 404, description: 'Not Found' })
+  @ApiResponse({ status: 500, description: 'Internal server error' })
+  async update(@Param('id') id: string, @Body() updateUserDto: UpdateUserDto) {
+    try {
+      return await this.userService.update(+id, updateUserDto);
+    } catch (e) {
+      console.log(e);
+    }
   }
 
   @Delete(':id')
-  remove(@Param('id') id: number): Promise<void> {
-    return this.userService.remove(id);
+  @ApiResponse({ status: 200, description: 'Delete user' })
+  @ApiResponse({ status: 404, description: 'Not Found' })
+  @ApiResponse({ status: 500, description: 'Internal server error' })
+  async remove(@Param('id') id: number): Promise<void> {
+    try {
+      return await this.userService.remove(id);
+    } catch (e) {
+      console.log(e);
+    }
   }
 }
