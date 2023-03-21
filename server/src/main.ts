@@ -11,7 +11,7 @@ async function bootstrap() {
 
   const config = new DocumentBuilder()
     .setTitle('Users Doc')
-    .setDescription('The users info')
+    .setDescription('This is CRUD api for users')
     .setVersion('1.0')
     .addTag('users')
     .build();
