@@ -10,13 +10,3 @@ import { User } from './entities/user.entity';
   providers: [UserService],
 })
 export class UserModule {}
-
-/*import { Module } from '@nestjs/common';
-import { UserService } from './user.service';
-import { UserController } from './user.controller';
-
-@Module({
-  controllers: [UserController],
-  providers: [UserService],
-})
-export class UserModule {}*/
